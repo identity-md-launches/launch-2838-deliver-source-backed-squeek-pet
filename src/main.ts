@@ -11,6 +11,7 @@ import { createPoller } from "./core/poller";
 import { PERFORMANCE, SCALE_PRESETS, loadSettings, petLayout, sanitize, saveSettings, type Settings } from "./core/settings";
 import { Director, idleInput } from "./pet/director";
 import { Hud } from "./pet/hud";
+import { mountPlayDock } from "./pet/play-dock";
 import { PULSE_URL, bubbleContent, panelContent, petLabel, toastContent } from "./pet/present";
 import { desktop, inTauri, type HitRect, type MenuItems } from "./platform/desktop";
 import { Sounds } from "./sound";
@@ -285,6 +286,75 @@ function setPanel(open: boolean) {
   refreshHud(Date.now(), true);
 }
 
+// ---- Browser play dock ------------------------------------------------------
+
+function playPat() {
+  sounds.unlock();
+  input.patAt = Date.now();
+  sounds.play("squeek");
+}
+
+function playFeed() {
+  sounds.unlock();
+  if (machine.state.mode === "running" || machine.state.mode === "waking") {
+    hud.toast({ text: tr("play.busy"), tone: "plain", action: null });
+    return;
+  }
+  input.treatAt = Date.now();
+  sounds.play("nom");
+}
+
+function playWake() {
+  const now = Date.now();
+  sounds.unlock();
+  input.wakeAt = now;
+  if (machine.state.mode === "sleeping" || machine.state.mode === "loading") {
+    sounds.play("squeek");
+  } else {
+    hud.toast({ text: tr("play.awake"), tone: "plain", action: null });
+    poller.pollSoon();
+  }
+}
+
+function mountBrowserChrome() {
+  document.body.classList.add("web");
+
+  const backdrop = document.createElement("div");
+  backdrop.className = "web-backdrop";
+  backdrop.setAttribute("aria-hidden", "true");
+
+  const head = document.createElement("header");
+  head.className = "web-head";
+  const title = document.createElement("h1");
+  title.textContent = "Squeek Pet";
+  const subtitle = document.createElement("p");
+  subtitle.textContent = tr("web.subtitle");
+  head.append(title, subtitle);
+
+  const dock = mountPlayDock(
+    {
+      label: tr("play.label"),
+      pat: tr("play.pat"),
+      feed: tr("play.feed"),
+      wake: tr("play.wake"),
+      hint: tr("web.hint"),
+    },
+    { pat: playPat, feed: playFeed, wake: playWake },
+  );
+
+  document.body.append(backdrop, head, dock);
+
+  window.addEventListener("keydown", (e) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const target = e.target as HTMLElement | null;
+    if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
+    const key = e.key.toLowerCase();
+    if (key === "p") playPat();
+    else if (key === "f") playFeed();
+    else if (key === "w") playWake();
+  });
+}
+
 // ---- Frame loop -------------------------------------------------------------
 
 let hudAt = 0;
@@ -374,6 +444,7 @@ applySize(true);
 desktop.setAlwaysOnTop(settings.alwaysOnTop);
 updateTray();
 startSource();
+if (!inTauri) mountBrowserChrome();
 requestAnimationFrame(loop);
 
 // Hooks for automated screenshots in a plain browser.
@@ -383,11 +454,18 @@ if (!inTauri) {
       get state() {
         return machine.state;
       },
+      get frame() {
+        return lastFrame;
+      },
+      get input() {
+        return input;
+      },
       hover(x: number, y: number) {
         pointerAt(x, y);
       },
       panel: setPanel,
       change,
+      play: { pat: playPat, feed: playFeed, wake: playWake },
     },
   });
 }

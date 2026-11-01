@@ -371,3 +371,158 @@ body {
     transform: translateY(4px) scale(0.97);
   }
 }
+
+/* Browser-only chrome. The desktop pet window stays transparent and keeps its
+   click-through hit regions; the hosted page gets a frame and a play dock. */
+body.web {
+  overflow: hidden;
+  background: #f6efe3;
+}
+
+.web-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 50% 34%, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0) 54%),
+    radial-gradient(circle at 16% 12%, rgba(160, 143, 238, 0.2), transparent 40%),
+    radial-gradient(circle at 86% 78%, rgba(214, 143, 111, 0.16), transparent 42%),
+    linear-gradient(#fbf6ec, #f0e5d2);
+}
+
+body.web #pet {
+  left: 50%;
+  top: 47%;
+  translate: -50% -50%;
+}
+
+.web-head {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 4;
+  text-align: center;
+  pointer-events: none;
+}
+
+.web-head h1 {
+  margin: 0;
+  color: var(--ink);
+  font-family: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.web-head p {
+  margin: 6px 0 0;
+  color: var(--ink-soft);
+  font-size: 12.5px;
+}
+
+.play-dock-wrap {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  translate: -50% 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.play-dock {
+  display: flex;
+  gap: 8px;
+  padding: 7px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: rgba(255, 253, 250, 0.95);
+  box-shadow: 4px 4px 0 rgba(58, 43, 37, 0.16);
+}
+
+.play-dock__button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: #fffdfa;
+  box-shadow: 2px 2px 0 rgba(58, 43, 37, 0.14);
+  color: var(--ink);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    transform 80ms ease,
+    background 120ms ease;
+}
+
+.play-dock__button:hover {
+  background: #efe7ff;
+}
+
+.play-dock__button:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.play-dock__icon {
+  color: var(--accent-ink);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.play-dock__button[data-action="feed"] .play-dock__icon {
+  color: #b4553f;
+}
+
+.play-dock__button[data-action="wake"] .play-dock__icon {
+  color: #c27f05;
+}
+
+.play-dock__hint {
+  max-width: 330px;
+  margin: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 253, 250, 0.72);
+  color: var(--ink-soft);
+  font-size: 11px;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .web-head {
+    top: 16px;
+  }
+
+  .web-head h1 {
+    font-size: 24px;
+  }
+
+  .play-dock-wrap {
+    bottom: 14px;
+  }
+
+  .play-dock__button {
+    padding: 8px 10px;
+    font-size: 10px;
+  }
+
+  .play-dock__hint {
+    max-width: 270px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .play-dock__button {
+    transition: none;
+  }
+}

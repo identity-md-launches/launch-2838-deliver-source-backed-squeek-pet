@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { LIE } from "../src/art/hamster";
 import { PetMachine } from "../src/core/pet-machine";
 import type { CoreStatus } from "../src/core/types";
 import { Director, idleInput } from "../src/pet/director";
@@ -40,5 +41,30 @@ describe("director", () => {
     const at = play(() => "IDLE", 4000);
     expect(at(4000).mode).toBe("sleeping");
     expect(at(4000).profile).toBe(0);
+  });
+
+  function asleep() {
+    const machine = new PetMachine(T0);
+    machine.dispatch({ type: "snapshot", snapshot: snap({ at: T0, core: "IDLE", work: 1000n }), at: T0 });
+    return machine;
+  }
+
+  it("stretches on a manual wake without claiming the wheel moved", () => {
+    const machine = asleep();
+    const director = new Director(T0, () => 0.5);
+    const frame = director.frame(machine.state, T0 + 320, { ...idleInput(), wakeAt: T0 }, 30);
+    expect(machine.state.mode).toBe("sleeping");
+    expect(frame.pose.eye).toBe("open");
+    expect(frame.pose.lie).toBeLessThan(LIE);
+  });
+
+  it("eats a dock treat without adding a data bean", () => {
+    const machine = asleep();
+    const director = new Director(T0, () => 0.5);
+    const frame = director.frame(machine.state, T0 + 720, { ...idleInput(), treatAt: T0 }, 30);
+    expect(machine.state.beans).toBe(0);
+    expect(machine.state.mode).toBe("sleeping");
+    expect(frame.pose.holdBean).toBe(true);
+    expect(frame.pose.chew).toBeGreaterThan(0);
   });
 });

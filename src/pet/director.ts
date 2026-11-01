@@ -13,6 +13,10 @@ export interface PointerInput {
   clickAt: number;
   patAt: number;
   grumpyAt: number;
+  /** A treat from the play dock. Presentation only; never a data bean. */
+  treatAt: number;
+  /** A manual wake from the play dock. Presentation only; the wheel state is unchanged. */
+  wakeAt: number;
 }
 
 export const idleInput = (): PointerInput => ({
@@ -21,6 +25,8 @@ export const idleInput = (): PointerInput => ({
   clickAt: -Infinity,
   patAt: -Infinity,
   grumpyAt: -Infinity,
+  treatAt: -Infinity,
+  wakeAt: -Infinity,
 });
 
 /** The wake-up animation (eyes, ears, shake) plays before the hop to the wheel. */
@@ -257,6 +263,30 @@ export class Director {
       if (now - input.clickAt < 150 && pose.eye === "open") pose.blink = 1;
       if (sleeping) pose.ear -= 14 * Math.sin(Math.PI * clamp((now - input.clickAt) / 300, 0, 1));
       mark = { kind: "note", t: (now - input.clickAt) / 800 };
+    } else if (now - input.wakeAt < 1500 && (mode === "sleeping" || mode === "loading")) {
+      // A manual wake is a stretch and a look around, then back to rest:
+      // it must not pretend the wheel started.
+      const since = now - input.wakeAt;
+      this.wakePose(pose, since);
+      if (since > 780) {
+        pose.head += 9 * Math.sin(((since - 780) / 460) * TAU);
+        pose.pupilX = 1.2;
+      }
+      mark = { kind: "exclaim", t: since / 1500 };
+    } else if (now - input.treatAt < 1600 && !running && !inAir) {
+      // A treat is a small presentation-only snack, not a measured bean.
+      const since = now - input.treatAt;
+      const u = clamp(since / 1600, 0, 1);
+      this.sitPose(pose);
+      pose.eye = "happy";
+      const arm = lerp(-78, 14, ease(clamp((u - 0.18) / 0.34, 0, 1)));
+      pose.legs[1] = arm + 4;
+      pose.legs[3] = arm;
+      pose.head = 28 + 6 * Math.sin(Math.PI * clamp((u - 0.3) / 0.42, 0, 1));
+      pose.holdBean = u > 0.24 && u < 0.68;
+      pose.chew = u > 0.42 && u < 0.9 ? Math.abs(Math.sin(since / 55)) : 0;
+      pose.pouch = Math.max(pose.pouch, 0.3);
+      mark = { kind: "note", t: u };
     }
 
     // Look at the cursor while it is over the pet.

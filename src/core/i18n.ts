@@ -108,6 +108,14 @@ const en = {
   "ago.minutes": "{n}m ago",
   "ago.hours": "{n}h ago",
   "ago.days": "{n}d ago",
+  "play.label": "Play with Squeektoshi",
+  "play.pat": "Pat",
+  "play.feed": "Feed",
+  "play.wake": "Wake",
+  "play.busy": "He's on the wheel — try feeding him when he stops.",
+  "play.awake": "He's already awake.",
+  "web.subtitle": "A little hamster that runs when Squeektoshi runs.",
+  "web.hint": "Pat, feed or wake him. Live wheel data only — no wallet, no transactions.",
 };
 
 type Key = keyof typeof en;
@@ -220,6 +228,14 @@ const zh: Record<Key, string> = {
   "ago.minutes": "{n} 分钟前",
   "ago.hours": "{n} 小时前",
   "ago.days": "{n} 天前",
+  "play.label": "和 Squeektoshi 互动",
+  "play.pat": "摸摸",
+  "play.feed": "喂豆",
+  "play.wake": "叫醒",
+  "play.busy": "他正在跑轮，停下来再喂吧。",
+  "play.awake": "他醒着呢。",
+  "web.subtitle": "Squeektoshi 跑轮时，他也会一起跑。",
+  "web.hint": "摸摸、喂豆、叫醒他。只读跑轮数据，不连钱包、不发交易。",
 };
 
 const tables: Record<Language, Record<Key, string>> = { en, zh };

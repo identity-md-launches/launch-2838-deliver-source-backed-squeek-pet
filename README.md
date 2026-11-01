@@ -51,6 +51,7 @@ Requests are plain GETs, so the browser engine sends no CORS preflight. Conditio
 | Double-click | Mini panel: wheel, speed, today's distance, measured work, work since launch, settled blocks with a transaction link. |
 | Right-click | Menu: details, size (50% to 150%, or a custom size in Settings), sounds, demo mode, Squeek Pulse, settings, hide, quit. |
 | Tray / menu bar icon | Show or hide, details, demo mode, settings, quit. |
+| Browser page (Pat / Feed / Wake) | The hosted build adds three buttons, or press `P`, `F` or `W`. Pat gives a heart, Feed gives a small treat, Wake stretches without changing the wheel state. Presentation only. |
 
 Everything outside the hamster, wheel and nest is click-through, so the pet never blocks the apps underneath.
 
