@@ -1,6 +1,6 @@
 // The scene around the pet: wheel, bowl, bed, beans and the marks that float
 // above the hamster. The hamster itself is in hamster.ts. The wheel is a clear
-// acrylic ring on a clear stand, after zake's reference photo: the desktop
+// acrylic ring on a clear stand, after a reference photo: the desktop
 // shows through it, and thin cool edges and white glints give it its shape.
 // The bowl is plain white ceramic and the bed soft oatmeal fleece.
 

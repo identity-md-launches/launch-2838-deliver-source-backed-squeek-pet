@@ -4,7 +4,7 @@ import type { CoreStatus } from "../src/core/types";
 import { Director, idleInput } from "../src/pet/director";
 import { snap, T0 } from "./helpers";
 
-// Presentation only, but it is the look zake asked for: on the wheel the
+// Presentation only, but it is the intended look: on the wheel the
 // hamster runs side-on, looking ahead along the wheel, not at the viewer.
 describe("director", () => {
   function play(core: (t: number) => CoreStatus, until: number) {

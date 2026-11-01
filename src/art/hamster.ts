@@ -1,4 +1,4 @@
-// Squeektoshi for the desktop, drawn after zake's reference photos: a golden
+// Squeektoshi for the desktop, drawn after reference photos: a golden
 // Syrian hamster with a darker saddle and forehead, cream muzzle, chest and
 // belly, grey-brown ears with pink insides, black bead eyes, a pink nose and
 // pink paws. There are no outlines: soft gradients, fluffy edges made of
@@ -111,7 +111,7 @@ const EYE_FAR: Bead = { c: [217, 131], rx: 4.1, ry: 4.7 };
 const MOUTH: Pt = [205, 149];
 
 // The head in profile, worn while running: it looks ahead along the wheel,
-// the way the hamster in zake's wheel photo does. The back of it sinks into
+// the way the hamster in the reference wheel photo does. The back of it sinks into
 // the body; the cream jaw and cheek sweep back from the nose to the throat.
 const SIDE_HEAD: Pt[] = [
   [180, 109], [194, 99.5], [209, 96.5], [222, 99.5], [233, 106.5], [241, 116], [247, 126], [251.5, 133.5],
