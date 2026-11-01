@@ -1,0 +1,29 @@
+.scene {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.scene .mark-text,
+.scene .glyph {
+  font-family: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-weight: 800;
+}
+
+/* Marks float over any wallpaper, so they get a white outline. */
+.scene .mark-text {
+  fill: #7b68e0;
+  stroke: #ffffff;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+
+.scene .mark-text.gold {
+  fill: #c27f05;
+}
+
+.scene .overflow {
+  fill: #1c9ad6;
+}
