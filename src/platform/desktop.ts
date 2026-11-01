@@ -65,7 +65,7 @@ export const desktop = {
   },
   openSettings() {
     if (inTauri) quietly(invoke("open_settings"));
-    else window.open("/settings.html", "squeek-pet-settings", "width=420,height=680");
+    else window.open(new URL("settings.html", window.location.href).href, "squeek-pet-settings", "width=420,height=680");
   },
   openUrl(url: string) {
     if (inTauri) quietly(openExternal(url));

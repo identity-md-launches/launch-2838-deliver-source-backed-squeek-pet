@@ -114,6 +114,7 @@ const en = {
   "play.wake": "Wake",
   "play.busy": "He's on the wheel — try feeding him when he stops.",
   "play.awake": "He's already awake.",
+  "web.title": "Squeek Pet",
   "web.subtitle": "A little hamster that runs when Squeektoshi runs.",
   "web.hint": "Pat, feed or wake him. Live wheel data only — no wallet, no transactions.",
 };
@@ -149,7 +150,7 @@ const zh: Record<Key, string> = {
   "offline.unreachable": "无法连接 api.squeekchain.com",
   "offline.unsupported": "API 格式已变化，请更新 Squeek Pet",
   "badge.live": "实时",
-  "badge.demo": "演示",
+  "badge.demo": "DEMO · 演示",
   "badge.simulated": "模拟",
   "badge.replay": "回放",
   "badge.derived": "派生",
@@ -234,6 +235,7 @@ const zh: Record<Key, string> = {
   "play.wake": "叫醒",
   "play.busy": "他正在跑轮，停下来再喂吧。",
   "play.awake": "他醒着呢。",
+  "web.title": "Squeek Pet · 仓鼠伙伴",
   "web.subtitle": "Squeektoshi 跑轮时，他也会一起跑。",
   "web.hint": "摸摸、喂豆、叫醒他。只读跑轮数据，不连钱包、不发交易。",
 };

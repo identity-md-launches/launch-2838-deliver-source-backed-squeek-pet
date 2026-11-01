@@ -67,4 +67,19 @@ describe("director", () => {
     expect(frame.pose.holdBean).toBe(true);
     expect(frame.pose.chew).toBeGreaterThan(0);
   });
+
+  it("never mutates telemetry or the ledger for Pat, Feed or Wake overlays", () => {
+    for (const core of ["IDLE", "ACTIVE"] as const) {
+      const machine = new PetMachine(T0);
+      machine.dispatch({ type: "snapshot", snapshot: snap({ core, rpm: core === "ACTIVE" ? 60 : 0, work: 1000n }), at: T0 });
+      const before = structuredClone(machine.state);
+      for (const action of ["patAt", "treatAt", "wakeAt"] as const) {
+        const director = new Director(T0, () => 0.5);
+        for (let ms = 0; ms <= 3000; ms += 100) {
+          director.frame(machine.state, T0 + ms, { ...idleInput(), [action]: T0 }, 30);
+        }
+        expect(machine.state).toEqual(before);
+      }
+    }
+  });
 });

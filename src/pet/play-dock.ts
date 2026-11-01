@@ -35,6 +35,7 @@ function actionButton(action: PlayAction, text: string, run: () => void): HTMLBu
   icon.textContent = ICONS[action];
 
   const label = document.createElement("span");
+  label.className = "play-dock__label";
   label.textContent = text;
 
   button.append(icon, label);
@@ -63,4 +64,16 @@ export function mountPlayDock(labels: PlayDockLabels, actions: PlayDockActions):
 
   wrap.append(dock, hint);
   return wrap;
+}
+
+/** Refresh text in place so focus and click handlers survive a language change. */
+export function updatePlayDock(wrap: HTMLElement, labels: PlayDockLabels) {
+  wrap.querySelector(".play-dock")!.setAttribute("aria-label", labels.label);
+  wrap.querySelector(".play-dock__hint")!.textContent = labels.hint;
+  for (const action of ["pat", "feed", "wake"] as const) {
+    const button = wrap.querySelector<HTMLButtonElement>(`[data-action="${action}"]`)!;
+    button.querySelector(".play-dock__label")!.textContent = labels[action];
+    button.title = `${labels[action]} (${KEYS[action]})`;
+    button.setAttribute("aria-label", button.title);
+  }
 }

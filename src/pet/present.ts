@@ -59,10 +59,10 @@ const serverNow = (state: PetState, now: number) => now + state.clockOffsetMs;
 
 /** Live hardware gets LIVE; demo and any non-hardware provenance are always labelled. */
 export function badgeFor(state: PetState, lang: Language): Badge | null {
-  if (state.mode === "offline") return { text: t(lang, "badge.offline"), tone: "offline" };
   const snap = state.snapshot;
+  if (snap?.source === "demo") return { text: t(lang, "badge.demo"), tone: "label" };
+  if (state.mode === "offline") return { text: t(lang, "badge.offline"), tone: "offline" };
   if (!snap?.measurement) return null;
-  if (snap.source === "demo") return { text: t(lang, "badge.demo"), tone: "label" };
   const provenance = snap.measurement.provenance;
   return { text: t(lang, PROVENANCE_BADGE[provenance]), tone: provenance === "hardware" ? "live" : "label" };
 }

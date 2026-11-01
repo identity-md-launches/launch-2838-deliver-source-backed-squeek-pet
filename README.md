@@ -65,6 +65,37 @@ Language (English / 中文, defaults to the system language), pet size (a slider
 
 A scripted 60-second loop for trying the animations while the real hamster rests. Demo data is labelled `DEMO` on the pet and in every bubble, never links a transaction, and runs in a separate state machine, so it can never mix with live totals.
 
+## Squeek Pet Web
+
+The browser companion continues [zakehowell/squeek-pet](https://github.com/zakehowell/squeek-pet), preserving its MIT code and original artwork. The existing public site is [squeek-pet.imd.site](https://squeek-pet.imd.site). This is a community companion, not an official SqueekChain endorsement.
+
+- Use **Pat / Feed / Wake**, or `P` / `F` / `W`, for a heart, a treat or a stretch. Feed waits while the pet is running or waking. Wake may request a fresh API poll when already awake. These are local animation overlays: they do not change observed wheel state, work, balances or API snapshots. Data beans still come only from measured work.
+- Hover for the status bubble; double-click the pet or wheel for details, then choose **Settings**. Settings opens beside the current page, including under `/ipfs/<cid>/`. Keep the pet tab open when changing language in Settings: the heading, hint, buttons, titles and accessible names update without reloading. The browser frame keeps readable light-palette text in either system theme; desktop/HUD colors still follow the system.
+- Settings are local to the browser origin. Desktop window controls (dragging the window, click-through, tray, autostart and always-on-top) require Tauri. Sound is off by default and requires a user gesture when enabled.
+- `?demo=1` explicitly selects the local 60-second simulation; `?demo=0` selects the real API. `?lang=en` / `?lang=zh` selects the initial language. DEMO remains visible in both languages even during the simulated offline segment (seconds 46–53). Demo mode is never selected automatically on an API error.
+
+The browser uses the same read-only `GET https://api.squeekchain.com/v1/status` integration described above, with no wallet, token, transactions, backend or secret. CORS, API availability and freshness determine whether synchronization works. After a failed request, the last accepted snapshot remains in memory and becomes offline when stale; there is no fabricated replacement reading. On a fresh load without a reading, the pet reports loading, then offline. Snapshots are not persisted across reloads or source changes.
+
+**Live synchronization is unverified for this browser fix release:** a direct API GET on 2026-11-01 returned HTTP 403 with a Cloudflare challenge. The older live-API result below is historical, not evidence that this release currently synchronizes. Offline and fixture/demo checks cannot establish live operation.
+
+### Browser build and regression checks
+
+```bash
+npm ci
+npm test
+npm run typecheck
+npm run build -- --base=./  # static export in dist/, with relative asset URLs
+npm run dev
+```
+
+For IPFS or other directory hosting, publish the whole generated `dist/` directory, including `settings.html` and `assets/`. The relative-base flag is required for subpath hosting; the default desktop build remains unchanged.
+
+With the dev server running, open `http://127.0.0.1:1420/tests/browser.html` in light and dark system modes. This dependency-free browser regression page reports PASS/FAIL for language changes in both directions, tab title, heading, hint, labels, titles, accessible names, retained focus/click handlers, and computed text contrast. It is a development check, excluded from the production export. `npm test` covers directory-relative settings URLs, the native Tauri settings command, DEMO disclosure across a full loop including offline, and presentation-only overlays that leave the full telemetry/ledger state unchanged.
+
+For an end-to-end settings check, open the pet and its Settings window, switch languages, and confirm the pet updates immediately. Serve `dist/` under an `/ipfs/<cid>/` directory and repeat to check navigation in the production export. Native desktop packaging and platform-specific window behavior are not revalidated by these browser checks.
+
+Browser fix validation (2026-11-01): 87 Vitest tests passed; strict TypeScript checks and the relative-base production export passed. The native-browser regression page passed in Chromium with light and dark themes. The exported pages were also served under `/ipfs/regression-cid/`: assets and Settings loaded, a Settings language change updated the open pet, Pat/Feed/Wake left telemetry unchanged, and DEMO stayed visible during simulated offline. These local results do not verify live synchronization or publication.
+
 ## Safety and privacy
 
 - Read-only: one public API, no wallet connection, no private keys, no signing, no transactions.

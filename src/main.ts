@@ -11,7 +11,7 @@ import { createPoller } from "./core/poller";
 import { PERFORMANCE, SCALE_PRESETS, loadSettings, petLayout, sanitize, saveSettings, type Settings } from "./core/settings";
 import { Director, idleInput } from "./pet/director";
 import { Hud } from "./pet/hud";
-import { mountPlayDock } from "./pet/play-dock";
+import { mountBrowserChrome as mountWebChrome } from "./pet/browser-chrome";
 import { PULSE_URL, bubbleContent, panelContent, petLabel, toastContent } from "./pet/present";
 import { desktop, inTauri, type HitRect, type MenuItems } from "./platform/desktop";
 import { Sounds } from "./sound";
@@ -36,6 +36,7 @@ let machine = new PetMachine(Date.now(), machineConfig());
 let director = new Director(Date.now());
 let lastFrame: Frame | null = null;
 let panelOpen = false;
+let refreshBrowserChrome: (() => void) | undefined;
 
 const hud = new Hud(root, {
   openUrl: (url) => desktop.openUrl(url),
@@ -134,6 +135,10 @@ function applySettings(next: Settings, origin: "here" | "elsewhere") {
   if (prev.demo !== next.demo) startSource();
   if (prev.language !== next.language || prev.demo !== next.demo) updateTray();
   document.documentElement.lang = next.language === "zh" ? "zh-CN" : "en";
+  if (prev.language !== next.language) {
+    refreshBrowserChrome?.();
+    refreshHud(Date.now(), true);
+  }
 }
 
 const change = (patch: Partial<Settings>) => applySettings(sanitize({ ...settings, ...patch }), "here");
@@ -317,32 +322,8 @@ function playWake() {
 }
 
 function mountBrowserChrome() {
-  document.body.classList.add("web");
-
-  const backdrop = document.createElement("div");
-  backdrop.className = "web-backdrop";
-  backdrop.setAttribute("aria-hidden", "true");
-
-  const head = document.createElement("header");
-  head.className = "web-head";
-  const title = document.createElement("h1");
-  title.textContent = "Squeek Pet";
-  const subtitle = document.createElement("p");
-  subtitle.textContent = tr("web.subtitle");
-  head.append(title, subtitle);
-
-  const dock = mountPlayDock(
-    {
-      label: tr("play.label"),
-      pat: tr("play.pat"),
-      feed: tr("play.feed"),
-      wake: tr("play.wake"),
-      hint: tr("web.hint"),
-    },
-    { pat: playPat, feed: playFeed, wake: playWake },
-  );
-
-  document.body.append(backdrop, head, dock);
+  const chrome = mountWebChrome(settings.language, { pat: playPat, feed: playFeed, wake: playWake });
+  refreshBrowserChrome = () => chrome.update(settings.language);
 
   window.addEventListener("keydown", (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
